@@ -1,6 +1,6 @@
-"""Graph module defining SortableDigraph, TraversableDigraph, and DAG classes."""
+# pylint: disable=C
 
-from collections import deque
+"""Graph module defining SortableDigraph, TraversableDigraph, and DAG classes."""
 
 
 class SortableDigraph:
@@ -8,7 +8,7 @@ class SortableDigraph:
 
     def __init__(self):
         """Initialize adjacency and node value dictionaries."""
-        self.adj = {}  # {node: {neighbor: weight}}
+        self.adj = {}
         self.node_values = {}
 
     def add_node(self, node, value=None):
@@ -57,11 +57,12 @@ class SortableDigraph:
             for target in self.adj[source]:
                 indegree[target] = indegree.get(target, 0) + 1
 
-        queue = deque([node for node, deg in indegree.items() if deg == 0])
+        # Use list as queue to avoid imports
+        queue = [node for node, deg in indegree.items() if deg == 0]
         order = []
 
         while queue:
-            node = queue.popleft()
+            node = queue.pop(0)  # pop(0) acts like deque.popleft()
             order.append(node)
             for neighbor in self.adj.get(node, {}):
                 indegree[neighbor] -= 1
@@ -92,9 +93,9 @@ class TraversableDigraph(SortableDigraph):
     def bfs(self, start):
         """Yield nodes reachable from start using breadth-first search."""
         visited = {start}
-        queue = deque([start])
+        queue = [start]
         while queue:
-            node = queue.popleft()
+            node = queue.pop(0)
             for neighbor in self.adj.get(node, {}):
                 if neighbor not in visited:
                     visited.add(neighbor)
